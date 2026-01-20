@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authorizedUsers } from '../../data'
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config";
+
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -12,11 +15,11 @@ const Login = () => {
     e.preventDefault()
     
     try {
+   const cred = await signInWithEmailAndPassword(auth, email, password)
+      const userEmail = cred.user.email
 
-      
-      const user = authorizedUsers.find(
-        u => u.email === email && u.password === password
-      )
+      // 2️⃣ Check if this email is authorized in your app
+      const user = authorizedUsers.find(u => u.email === userEmail)
 
       if (!user) {
         setError('Invalid email or password')
@@ -39,7 +42,21 @@ const Login = () => {
       
             
     } catch (error) {
-      setError(error.message || "An error occurred!")
+      console.error(err)
+
+      let message = "Login failed. Please try again."
+
+      if (err.code === "auth/user-not-found") {
+        message = "No account found with this email."
+      } else if (err.code === "auth/wrong-password") {
+        message = "Incorrect password."
+      } else if (err.code === "auth/invalid-email") {
+        message = "Invalid email format."
+      } else if (err.code === "auth/too-many-requests") {
+        message = "Too many failed attempts. Try again later."
+      }
+
+      setError(message)
       setShowErrorBox(true)
     }
   }
