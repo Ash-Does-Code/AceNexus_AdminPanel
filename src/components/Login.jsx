@@ -15,14 +15,19 @@ const Login = () => {
     e.preventDefault()
     
     try {
-   const cred = await signInWithEmailAndPassword(auth, email, password)
+  //  const cred = await signInWithEmailAndPassword(auth, email, password)
+   const normalizedEmail = email.trim().toLowerCase()
+const cred = await signInWithEmailAndPassword(auth, normalizedEmail, password)
       const userEmail = cred.user.email
 
       // 2️⃣ Check if this email is authorized in your app
-      const user = authorizedUsers.find(u => u.email === userEmail)
-
+      // const user = authorizedUsers.find(u => u.email === userEmail)
+      const user = authorizedUsers.find(
+u => u.email.toLowerCase() === userEmail.toLowerCase()
+ )
       if (!user) {
-        setError('Invalid email or password')
+        // setError('Invalid email or password')
+        setError('You are not authorized to access this app')
         setShowErrorBox(true)
         return
       }
@@ -31,7 +36,8 @@ const Login = () => {
       console.log('Cluster ID:', user.clusterID)
       
       localStorage.setItem('user', JSON.stringify({
-        email: user.email,
+        // email: user.email,
+        email: userEmail,
         clusterID: user.clusterID
       }))
       
