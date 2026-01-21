@@ -9,15 +9,15 @@ export const Hero = () => {
         <div className="float">
           <Image
             className="w-30 h-auto mx-auto mt-0"
-            src={"/ACE_SVG_original.svg"}
+            src={"/favicon.png"}
             alt="photo"
-            width={10}
-            height={10}
+            width={150}
+            height={150}
           />
         </div>
 
         <div className="flex flex-col w-2/3 mx-auto items-center mt-3 border-b-[1px] border-gray-700 py-5 fade-up delay-1">
-          <div className="font-medium">ACE PRESENTS</div>
+          <div className="font-medium text-white">ACE PRESENTS</div>
           <div className="font-bold text-yellow-300 text-5xl glow-text">NEXUS'26</div>
         </div>
 
@@ -32,17 +32,18 @@ export const Hero = () => {
       <div className="hidden md:flex flex-col items-center  w-full py-10">
         <div className="float">
           <Image
+            quality={100}
             className="w-40 h-auto mx-auto mb-8"
-            src={"/ACE_SVG_original.svg"}
+            src={"/favicon.png"}
             alt="photo"
-            width={5}
-            height={5}
+            width={150}
+            height={150}
           />
         </div>
 
-        <div className="flex flex-col w-3/4 max-w-5xl items-center  border-gray-700 pb-3 fade-up delay-1">
-          <div className=" text-xl tracking-[0.2em]">ACE PRESENTS</div>
-          <div className="font-bold text-yellow-300 text-4xl mt-2 tracking-tighter glow-text">
+        <div className="flex flex-col w-3/4 max-w-5xl items-center border-b-[1px] w-fit mb-5 border-gray-700 pb-3 fade-up delay-1">
+          <div className=" text-xl tracking-[0.2em] text-white">ACE PRESENTS</div>
+          <div className="font-bold text-yellow-300 text-6xl mt-2 tracking-tighter glow-text">
             NEXUS'26
           </div>
         </div>

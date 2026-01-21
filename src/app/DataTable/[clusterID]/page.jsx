@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect ,use  } from 'react'
-
+import * as XLSX from 'xlsx'
 import { collection, getDocs ,query, where } from 'firebase/firestore'
 import { db } from "../../../../config"; 
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,6 @@ export default  function page({ params }) {
   const fetchData = async () => {
   try {
     setLoading(true)
-    
     const q = query(
       collection(db, 'submissions'),
       where('eventId', '==', clusterID)
@@ -44,7 +43,8 @@ export default  function page({ params }) {
 }
   if (loading) {
     return (
-      <div className='flex items-center justify-center min-h-screen bg-[#0b0f1a]'>
+       <div className='flex items-center justify-center gap-3 min-h-screen bg-[#0b0f1a]'>
+        <div className="w-8 h-8 border-4 border-yellow-300 border-t-transparent rounded-full animate-spin"></div>
         <div className='text-yellow-300 text-xl'>Loading...</div>
       </div>
     )
@@ -57,19 +57,48 @@ export default  function page({ params }) {
       </div>
     )
   }
-
+  const downloadExcel = () => {
+  const excelData = data.map(row => ({
+    'Register No.': Array.isArray(row.registerNumber) ? row.registerNumber.join(', ') : row.registerNumber || 'N/A',
+    'Name': Array.isArray(row.name) ? row.name.join(', ') : row.name || 'N/A',
+    'Email': row.email || 'N/A',
+    'Department': row.department || 'N/A',
+    'Phone': row.phoneNumber || 'N/A',
+    'Year': row.year || 'N/A'
+  }))
+  const worksheet = XLSX.utils.json_to_sheet(excelData)
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Registrations')
+  const max_width = excelData.reduce((w, r) => Math.max(w, r['Department']?.length || 0), 10)
+  worksheet['!cols'] = [
+    { wch: 20 },
+    { wch: 25 },
+    { wch: 30 }, 
+    { wch: max_width }, 
+    { wch: 15 }, 
+    { wch: 8 }  
+  ]
+  XLSX.writeFile(workbook, `registrations_${clusterID}_${new Date().toISOString().split('T')[0]}.xlsx`)
+}
   return (
     <div className='min-h-screen bg-[#0b0f1a] p-8'>
-      <h1 className='bg-blue-500 w-fit p-2 text-xl rounded cursor-pointer' onClick={handleClick}>Logout</h1>
+      <h1 className='bg-yellow-400 rounded-full w-fit px-6 py-2 font-bold mb-5 text-xs rounded cursor-pointer hover:bg-yellow-200 duration-300 transition-all ease-in-out' onClick={handleClick}>Logout</h1>
+      <button
+        onClick={downloadExcel}
+        disabled={data.length === 0}
+        className='bg-yellow-400 mb-5 text-black rounded-full px-6 py-2 font-bold text-xs cursor-pointer hover:bg-yellow-200 duration-300 transition-all ease-in-out disabled:opacity-50 disabled:cursor-not-allowed'
+      >
+        Download Excel
+      </button>
       <div className='max-w-6xl mx-auto'>
-        <h1 className='text-3xl font-bold text-yellow-300 mb-6 text-center'>
+        <h1 className='text-3xl font-[200] text-white mb-6 text-center'>
           Registrations
         </h1>
         
         <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
-          <div className='overflow-x-auto'>
+          <div className='overflow-x-auto max-h-[65vh] overflow-y-auto'>
             <table className='w-full'>
-              <thead className='bg-gray-800 text-white'>
+              <thead className='bg-gray-800 text-white sticky top-0'>
                 <tr>
                   <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'>
                     Register No.
@@ -89,7 +118,6 @@ export default  function page({ params }) {
                                     <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'>
                     Year
                   </th>
-                  {/* Add more headers based on your data structure */}
                 </tr>
               </thead>
               <tbody className='bg-white divide-y divide-gray-200'>
@@ -103,10 +131,10 @@ export default  function page({ params }) {
                   data.map((row) => (
                     <tr key={row.id} className='hover:bg-gray-50'>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                        {row.registerNumber}
+                        {Array.isArray(row.registerNumber) ? row.registerNumber.join(', ') : row.registerNumber || 'N/A'}
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                        {row.name || 'N/A'}
+                        {Array.isArray(row.name) ? row.name.join(', ') : row.name || 'N/A'}
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
                         {row.email || 'N/A'}
@@ -130,7 +158,7 @@ export default  function page({ params }) {
 
         <button
           onClick={fetchData}
-          className='mt-6 mx-auto block bg-yellow-400 text-gray-900 font-semibold py-2 px-6 rounded-md hover:bg-yellow-500 transition-colors'
+          className='mt-10 mx-auto block bg-yellow-400 text-gray-900 font-semibold py-2 px-6 rounded-full font-bold ease-in-out duration-300 text-xs cursor-pointer hover:bg-yellow-200 transition-colors'
         >
           Refresh Data
         </button>

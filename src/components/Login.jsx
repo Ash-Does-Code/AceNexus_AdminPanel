@@ -15,18 +15,13 @@ const Login = () => {
     e.preventDefault()
     
     try {
-  //  const cred = await signInWithEmailAndPassword(auth, email, password)
-   const normalizedEmail = email.trim().toLowerCase()
-const cred = await signInWithEmailAndPassword(auth, normalizedEmail, password)
+      const normalizedEmail = email.trim().toLowerCase()
+      const cred = await signInWithEmailAndPassword(auth, normalizedEmail, password)
       const userEmail = cred.user.email
-
-      // 2️⃣ Check if this email is authorized in your app
-      // const user = authorizedUsers.find(u => u.email === userEmail)
       const user = authorizedUsers.find(
-u => u.email.toLowerCase() === userEmail.toLowerCase()
- )
+      u => u.email.toLowerCase() === userEmail.toLowerCase()
+      )
       if (!user) {
-        // setError('Invalid email or password')
         setError('You are not authorized to access this app')
         setShowErrorBox(true)
         return
@@ -36,7 +31,6 @@ u => u.email.toLowerCase() === userEmail.toLowerCase()
       console.log('Cluster ID:', user.clusterID)
       
       localStorage.setItem('user', JSON.stringify({
-        // email: user.email,
         email: userEmail,
         clusterID: user.clusterID
       }))
@@ -48,18 +42,20 @@ u => u.email.toLowerCase() === userEmail.toLowerCase()
       
             
     } catch (error) {
-      console.error(err)
+      console.error(error)
 
       let message = "Login failed. Please try again."
 
-      if (err.code === "auth/user-not-found") {
+      if (error.code === "auth/user-not-found") {
         message = "No account found with this email."
-      } else if (err.code === "auth/wrong-password") {
+      } else if (error.code === "auth/wrong-password") {
         message = "Incorrect password."
-      } else if (err.code === "auth/invalid-email") {
+      } else if (error.code === "auth/invalid-email") {
         message = "Invalid email format."
-      } else if (err.code === "auth/too-many-requests") {
+      } else if (error.code === "auth/too-many-requests") {
         message = "Too many failed attempts. Try again later."
+      } else if (error.code === "auth/invalid-credential") {
+        message = "Invalid credentials!"
       }
 
       setError(message)
@@ -74,12 +70,12 @@ u => u.email.toLowerCase() === userEmail.toLowerCase()
         
         <div className='mb-4'>
           <input 
-            type="text" 
-            placeholder='Sastra Email' 
+            type="email" 
+            placeholder='SASTRA Email ID' 
             required 
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className='w-full px-4 py-2 border border-gray-300 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-yellow-400'
+            className='outline-none w-full px-4 py-2 bg-[#0f172a] border border-gray-300 rounded-md text-white focus:outline-none placeholder:font-[200] placeholder:text-gray-500'
           />
         </div>
         
@@ -90,13 +86,13 @@ u => u.email.toLowerCase() === userEmail.toLowerCase()
             required 
             value={password}
             onChange={e => setPassword(e.target.value)}          
-            className='w-full px-4 py-2 border border-gray-300 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 '
+            className='w-full px-4 py-2 bg-[#0f172a] border border-gray-300 rounded-md text-white focus:outline-none placeholder:font-[200] placeholder:text-gray-500'
           />
         </div>
         
         <button 
           type="submit" 
-          className='w-full bg-yellow-400 text-gray-900 font-semibold py-2 px-4 rounded-md hover:bg-yellow-500 transition-colors'
+          className='font-bold cursor-pointer w-full bg-yellow-400 text-gray-900 font-semibold py-2 px-4 rounded-md hover:bg-yellow-200 transition-all ease-in-out duration-300'
         >
           Login
         </button>
