@@ -97,6 +97,7 @@ export default  function page({ params }) {
         
         <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
           <div className='overflow-x-auto max-h-[65vh] overflow-y-auto'>
+            <p className='text-black p-2'>{data.length} records</p>
             <table className='w-full'>
               <thead className='bg-gray-800 text-white sticky top-0'>
                 <tr>
