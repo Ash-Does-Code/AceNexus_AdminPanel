@@ -89,7 +89,7 @@ export default function Page () {
         ...doc.data()
       }))
       setData6(fetchedData6)
-    }
+    } /* */
     catch(error){
       setError('Failed to fetch data: ' + error.message)
       setLoading(false)
