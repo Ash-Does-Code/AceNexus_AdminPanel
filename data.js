@@ -5,5 +5,5 @@ export const authorizedUsers = [
   { email: 'appdevelopmentace@gmail.com', clusterID: 'b64lXT4CX3K7eZCGZV26' },
   { email: 'acecybersec@gmail.com',  clusterID: 'lGBwKKNGcupaTlEs4uyA' },
   { email: 'omega.cp.ace@gmail.com', clusterID: 'oDXbHtfvPnce1RCSJyMj' },
-  { email: 'universal@gmail.com', clusterID: ""}
+  { email: 'coordinatorsace@gmail.com', clusterID: ""}
 ];
